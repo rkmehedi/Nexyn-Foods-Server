@@ -65,8 +65,11 @@ async function run() {
 
     app.get('/foods', async (req, res) => {
       try {
-        const sortOrder = req.query.sort === 'desc' ? -1 : 1;
-        const result = await foodCollection.find().sort({ food_name: sortOrder }).toArray();
+        const sortField = req.query.sortField || 'food_name';
+        const sortOrder = req.query.sortOrder === 'desc' ? -1 : 1;
+        const sortObject = {};
+        sortObject[sortField] = sortOrder;
+        const result = await foodCollection.find().sort(sortObject).toArray();
         res.send(result);
       } catch {
         res.status(500).send({ message: "Failed to fetch food items" });
